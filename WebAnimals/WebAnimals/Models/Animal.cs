@@ -2,7 +2,7 @@
 
 public class Animal
 {
-    public int Id { get; }
+    public int IdAnimal { get; }
 
     public string Name { get; }
 
@@ -14,11 +14,12 @@ public class Animal
     
     public Animal(int id, string name, string category, double weight, string color)
     {
-        Id = id;
+        IdAnimal = id;
         Name = name;
         Category = category;
         Weight = weight;
         Color = color;
     }
+    
 }
 
