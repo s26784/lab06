@@ -1,9 +1,13 @@
-﻿using WebAnimals.Models;
+﻿using WebAnimals.DTO;
+using WebAnimals.Models;
 
 namespace WebAnimals.Services;
 
 public interface IAnimalService
 {
-    IEnumerable<Animal> GetAnimals();
-    int CreateAnimal(Animal newAnimal);
+    IOrderedEnumerable<Animal> GetAnimals(string orderBy);
+    Animal AddAnimal(AnimalDTO animalDTO);
+    void UpdateAnimal(int idAnimal, AnimalDTO animalDto);
+    void DeleteAnimal(int id);
+    
 }

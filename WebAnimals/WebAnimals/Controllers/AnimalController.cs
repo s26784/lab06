@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebAnimals.DTO;
 using WebAnimals.Models;
 using WebAnimals.Services;
 
 namespace WebAnimals.Controllers;
-
+[Route("api/animals")]
+[ApiController]
 public class AnimalController : ControllerBase
 {
     private IAnimalService _animalService;
@@ -15,55 +17,31 @@ public class AnimalController : ControllerBase
     
     
     [HttpGet]
-    public IActionResult GetAnimals()
+    public IActionResult GetAnimals(string orderBy = "name")
     {
-        return Ok(_animalService.GetAnimals());
+        var animals = _animalService.GetAnimals(orderBy);
+        return Ok(animals);
     }
-    
-    [HttpGet("{id:int}")]
-    public IActionResult GetAnimal(int id)
-    {
-        var animal = _animals.FirstOrDefault(st => st.Idanimal == id);
-        if (animal == null)
-        {
-            return NotFound($"Animal with id {id} was not found");
-        }
-        
-        return Ok(animal);
-    }
-    
-    [HttpPost]
-    public IActionResult CreateAnimal(animal animal)
-    {
-        _animals.Add(animal);
-        return StatusCode(StatusCodes.Status201Created);
-    }
-    
-    [HttpPut("{id:int}")]
-    public IActionResult Updateanimal(int id, Animal animal)
-    {
-        var animalToEdit= _animals.FirstOrDefault(s => s.Idanimal == id);
 
-        if (animalToEdit == null)
-        {
-            return NotFound($"animal with id {id} was not found");
-        }
-        
-        _animals.Remove(animalToEdit);
-        _animals.Add(animal);
+    [HttpPost]
+    public IActionResult AddAnimal(AnimalDTO animalDto)
+    {
+        _animalService.AddAnimal(animalDto);
+        return NoContent();
+    }
+
+    
+    [HttpPut("{idAnimal}")]
+    public IActionResult UpdateAnimal(int idAnimal, AnimalDTO animalDTO)
+    {
+        _animalService.UpdateAnimal(idAnimal, animalDTO);
         return NoContent();
     }
     
-    [HttpDelete("{id:int}")]
-    public IActionResult Deleteanimal(int id)
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAnimal(int id)
     {
-        var animalToEdit= _animals.FirstOrDefault(s => s.Idanimal == id);
-        if (animalToEdit == null)
-        {
-            return NoContent();
-        }
-
-        _animals.Remove(animalToEdit);
+        _animalService.DeleteAnimal(id);
         return NoContent();
     }
     

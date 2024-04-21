@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebAnimals")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+98baa06917fe0c54c07c5c0aa90f19a027de1e9f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7d07b5b00ba84e766b141759770239f2762d9bc")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebAnimals")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebAnimals")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
