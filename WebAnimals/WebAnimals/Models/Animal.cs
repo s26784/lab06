@@ -4,12 +4,12 @@ namespace WebAnimals.Models;
 
 public class Animal
 {
-    public int IdAnimal { get;}
-    public string Name { get;}
-    public string Description { get;}
-    public string Category { get;}
-    public string Area { get;}
-    
+    public int IdAnimal { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Category { get; set; }
+    public string Area { get; set; }
+
     public Animal(int id, string name, string description, string category, string area)
     {
         IdAnimal = id;
@@ -18,6 +18,8 @@ public class Animal
         Category = category;
         Area = area;
     }
+    
+    public Animal() {}
 
     public Animal(AnimalDTO animalDto)
     {

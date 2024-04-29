@@ -15,65 +15,26 @@ public class AnimalService : IAnimalService
         _animalRepository = animalRepository;
     }
 
-    public IOrderedEnumerable<Animal> GetAnimals(string orderBy)
+    public List<Animal> GetAnimals(string orderBy)
     {
-        IList<Animal> animals = _animalRepository.GetAnimals();
-        
-        switch (orderBy.ToLower())
-        {
-            case "description":
-                return animals.OrderBy(a => a.Description);
-            case "category":
-                return animals.OrderBy(a => a.Category);
-            case "area":
-                return animals.OrderBy(a => a.Area);
-            default:
-                return animals.OrderBy(a => a.Name);
-        }
+        return _animalRepository.GetAnimals(orderBy);
+
     }
 
-    public Animal AddAnimal(AnimalDTO animalDTO)
+    public int AddAnimal(Animal animal)
     {
-        Animal newAnimal = new Animal(animalDTO);
-        _animalRepository.AddAnimal(newAnimal);
-        return newAnimal;
+        return _animalRepository.AddAnimal(animal);
     }
 
-    public void UpdateAnimal(int idAnimal, AnimalDTO animalDto)
+    public int UpdateAnimal(AnimalDTO animalDto)
     {
-        Animal animalToDelete = GetAnimal(idAnimal);
-        _animalRepository.DeleteAnimal(animalToDelete);
-        Animal updatedAnimal = new Animal(animalDto);
-        _animalRepository.AddAnimal(updatedAnimal);
+        return _animalRepository.UpdateAnimal(animalDto);
     }
 
-    public void DeleteAnimal(int idAnimal)
+    public int DeleteAnimal(int idAnimal)
     {
-
-        Animal animalToDelete = GetAnimal(idAnimal);
-        
-        _animalRepository.DeleteAnimal(animalToDelete);
+        return _animalRepository.DeleteAnimal(idAnimal);
     }
     
-    
-    public Animal GetAnimal(int id)
-    {
-        Animal foundAnimal = null;
-
-        foreach (Animal animal in _animalRepository.GetAnimals())
-        {
-            if (animal.IdAnimal == id)
-            {
-                foundAnimal = animal;
-            }
-        }
-
-        if (foundAnimal == null)
-        {
-            throw new System.Exception("Animal with given ID not found.");
-        }
-
-        return foundAnimal;
-    }
 
 }

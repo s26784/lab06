@@ -1,40 +1,118 @@
-﻿using WebAnimals.DTO;
+﻿using System.Data.SqlClient;
+using WebAnimals.DTO;
 using WebAnimals.Models;
 
 namespace WebAnimals.Repositories;
 
 public class AnimalRepository : IAnimalRepository
 {
-    private static readonly List<Animal> _animals = new()
+
+    private IConfiguration _configuration;
+
+    public AnimalRepository(IConfiguration configuration)
     {
-        new Animal(1, "Pusheck", "aaa", "Cat", "Ghyrf"),
-        new Animal(2, "Otamendi", "bbb", "Dog", "adfg"),
-        new Animal(3, "Dotter", "ccc", "Hamster", "dafgd"),
-        new Animal(4, "Toady", "ddd", "Snake", "fdagfg"),
-        new Animal(5, "Dillon", "eee", "Dog", "sdf")
-    };
+        _configuration = configuration;
+    }
     
 
-    public List<Animal> GetAnimals()
+    public List<Animal> GetAnimals(string orderBy)
     {
-        List<Animal> resultList = _animals;
+        
+        using var con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
+        con.Open();
+
+        using var cmd = new SqlCommand();
+        cmd.Connection = con;
+        // SQL Injection bye bye
+        string orderByValue = GetOrderBy(orderBy);
+        cmd.CommandText = "SELECT IdAnimal, Name, Description, Category, Area FROM Animal ORDER BY " +orderByValue;
+
+        var dr = cmd.ExecuteReader();
+        List<Animal> resultList = new List<Animal>();
+
+        while (dr.Read())
+        {
+            int idAnimal = (int)dr["IdAnimal"];
+            string name = dr["Name"].ToString();
+            string description = dr["Description"].ToString();
+            string category = dr["Category"].ToString();
+            string area = dr["Area"].ToString();
+            resultList.Add(new Animal(idAnimal, name, description, category, area));
+        }
         return resultList;
     }
 
-    public void AddAnimal(Animal animal)
+    public int AddAnimal(Animal animal)
     {
-        _animals.Add(animal);
+        using var con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
+        con.Open();
+        using SqlCommand cmd = new SqlCommand();
+        cmd.Connection = con;
+        cmd.CommandText = "INSERT INTO Animal(Name, Description, Category, Area) VALUES(@Name, @Description, @Category, @Area)";
+        cmd.Parameters.AddWithValue("@Name", animal.Name);
+        cmd.Parameters.AddWithValue("@Description", animal.Description);
+        cmd.Parameters.AddWithValue("@Category", animal.Category);
+        cmd.Parameters.AddWithValue("@Area", animal.Area);
+        
+        int affectedRows = cmd.ExecuteNonQuery();
+        return affectedRows;
     }
     
 
-    public void UpdateAnimal(int idAnimal, Animal animal)
+    public int UpdateAnimal(AnimalDTO animalDto)
     {
-        throw new NotImplementedException();
+        (int id, string name, string description, string category, string area) = animalDto;
+        
+        using var con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
+        con.Open();
+        
+        using var cmd = new SqlCommand();
+        cmd.Connection = con;
+        cmd.CommandText = "UPDATE Animal SET Name=@Name, Description = @Description, Category = @Category, Area = @Area WHERE IdAnimal = @IdAnimal";
+        cmd.Parameters.AddWithValue("@IdAnimal", id);
+        cmd.Parameters.AddWithValue("@Name", name);
+        cmd.Parameters.AddWithValue("@Description", description);
+        cmd.Parameters.AddWithValue("@Category", category);
+        cmd.Parameters.AddWithValue("@Area", area);
+        
+        var affectedCount = cmd.ExecuteNonQuery();
+        return affectedCount;
     }
 
-    public void DeleteAnimal(Animal animalToDelete)
+    public int DeleteAnimal(int idAnimal)
     {
-        _animals.Remove(animalToDelete);
+        using SqlConnection con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
+        con.Open();
+        using SqlCommand cmd = new SqlCommand();
+        cmd.Connection = con;
+        cmd.CommandText = "DELETE FROM Animal WHERE IdAnimal = @IdAnimal";
+        cmd.Parameters.AddWithValue("@IdAnimal", idAnimal);
+        
+        int affectedRows = cmd.ExecuteNonQuery();
+        return affectedRows;
+    }
+    
+    private string GetOrderBy(string orderBy)
+    {
+        switch(orderBy.ToLower())
+        {
+            case "description":
+            {
+                return "Description";
+            }
+            case "category":
+            {
+                return "Category";
+            }
+            case "area":
+            {
+                return "Area";
+            }
+            default:
+            {
+                return "Name";
+            }
+        }
     }
     
 }

@@ -5,9 +5,9 @@ namespace WebAnimals.Services;
 
 public interface IAnimalService
 {
-    IOrderedEnumerable<Animal> GetAnimals(string orderBy);
-    Animal AddAnimal(AnimalDTO animalDTO);
-    void UpdateAnimal(int idAnimal, AnimalDTO animalDto);
-    void DeleteAnimal(int id);
+    List<Animal> GetAnimals(string orderBy);
+    int AddAnimal(Animal animal);
+    int UpdateAnimal(AnimalDTO animalDto);
+    int DeleteAnimal(int idAnimal);
     
 }

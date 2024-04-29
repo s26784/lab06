@@ -5,12 +5,12 @@ namespace WebAnimals.Repositories;
 
 public interface IAnimalRepository
 {
-        List<Animal> GetAnimals();
+        List<Animal> GetAnimals(string orderBy);
 
-        void AddAnimal(Animal animal);
+        int AddAnimal(Animal animal);
     
-        void UpdateAnimal(int idAnimal, Animal animal);
+        int UpdateAnimal(AnimalDTO animalDto);
 
-        void DeleteAnimal(Animal animal);
+        int DeleteAnimal(int IdAnimal);
     
 }
